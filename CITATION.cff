@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+message: "If you use this benchmark suite or its baselines, please cite it."
+title: "LabAgentBench: Benchmarks for human- and literature-informed Bayesian optimisation"
+type: software
+authors:
+  - family-names: "Beycan"
+    given-names: "Burhan"
+date-released: "2026-02-27"
+repository-code: "https://github.com/<your-username>/labagentbench"
+license: MIT
+keywords:
+  - Bayesian optimisation
+  - benchmarking
+  - human in the loop
+  - LLM
+  - text priors

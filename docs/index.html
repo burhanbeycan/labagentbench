@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>LabAgentBench | Interactive Text‑Prior Optimisation Demo</title>
+  <link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="brand">
+        <h1>LabAgentBench</h1>
+        <p>
+          Live, browser‑side demo: compare vanilla optimisation vs text‑informed optimisation on a benchmark function.
+          This is designed to communicate the <i>method idea</i> in one click during interviews.
+        </p>
+        <p class="muted">
+          Repo: <a id="repoLink" href="#">https://github.com/&lt;your-username&gt;/labagentbench</a>
+        </p>
+
+        <div class="stats">
+          <div class="stat"><div class="num">Branin</div><div class="lbl">Benchmark task</div></div>
+          <div class="stat"><div class="num">2D</div><div class="lbl">Search space</div></div>
+          <div class="stat"><div class="num">LCB</div><div class="lbl">Acquisition (GP‑LCB)</div></div>
+          <div class="stat"><div class="num">No server</div><div class="lbl">Runs in browser</div></div>
+        </div>
+
+        <div class="nav">
+          <a href="#demo">⚡ Demo</a>
+          <a href="#about">About</a>
+        </div>
+      </div>
+
+      <div class="badges">
+        <div class="badge">Benchmarking</div>
+        <div class="badge">Bayesian Optimisation</div>
+        <div class="badge">Text Priors</div>
+      </div>
+    </div>
+
+    <div id="demo" class="card">
+      <h2>Text‑informed optimisation demo</h2>
+      <p class="muted">
+        Enter a simple text hint (e.g., <span class="code">x in [-5, 0], y in [10, 15]</span> or <span class="code">near (-3, 12)</span>),
+        then compare algorithms.
+      </p>
+
+      <div class="grid2">
+        <div class="panel">
+          <h3 style="margin:0 0 6px">Controls</h3>
+
+          <div class="control">
+            <label for="algo">Algorithm <span class="val" id="algo_val">—</span></label>
+            <select id="algo">
+              <option value="random">Random search</option>
+              <option value="text_random">Text‑prior random search</option>
+              <option value="gp_lcb">GP‑LCB (vanilla BO)</option>
+              <option value="text_gp_lcb">Text‑prior GP‑LCB</option>
+            </select>
+          </div>
+
+          <div class="control">
+            <label for="iters">Iterations <span class="val" id="iters_val">—</span></label>
+            <input type="range" id="iters" min="10" max="60" step="1" value="30"/>
+          </div>
+
+          <div class="control">
+            <label for="seed">Seed <span class="val" id="seed_val">—</span></label>
+            <input type="number" id="seed" min="0" max="9999" step="1" value="0"/>
+          </div>
+
+          <div class="control">
+            <label for="hint">Text hint (optional)</label>
+            <input type="text" id="hint" value="x in [-5, 0], y in [10, 15]" />
+            <div class="small" style="margin-top:6px">
+              Supported patterns: <span class="code">x in [a,b]</span>, <span class="code">y in [c,d]</span>, <span class="code">near (a,b)</span>.
+            </div>
+          </div>
+
+          <div class="actions">
+            <button id="runBtn">Run</button>
+            <button id="resetBtn" class="secondary">Reset</button>
+          </div>
+
+          <div class="modelinfo" id="runInfo">Ready.</div>
+        </div>
+
+        <div class="panel">
+          <h3 style="margin:0 0 6px">Best result</h3>
+          <div class="kv">
+            <div><div class="k">Best f(x,y)</div><div class="v" id="bestVal">—</div></div>
+            <div><div class="k">Best x</div><div class="v" id="bestX">—</div></div>
+          </div>
+          <p class="muted" style="margin-top:10px">
+            The heatmap shows the objective landscape. Dots are sampled points.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid2" style="margin-top:14px">
+        <div class="panel">
+          <h3 style="margin:0 0 10px">Objective landscape + samples</h3>
+          <div class="canvasWrap">
+            <canvas id="landscape" width="820" height="420"></canvas>
+          </div>
+        </div>
+        <div class="panel">
+          <h3 style="margin:0 0 10px">Best‑so‑far vs iteration</h3>
+          <div class="canvasWrap">
+            <canvas id="progress" width="820" height="420"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="about" class="card">
+      <h2>About</h2>
+      <p class="muted">
+        The Cooper Group advert highlights human‑ and literature‑informed discovery and hybrid LLM‑Bayesian optimisation. This demo illustrates the core idea:
+        <b>text hints become priors/constraints</b> that guide exploration in a black‑box search space.
+      </p>
+      <ul>
+        <li><b>Vanilla BO:</b> GP surrogate + LCB acquisition.</li>
+        <li><b>Text‑prior BO:</b> sample candidates inside hint‑derived bounds (or near a hint centre) to speed convergence.</li>
+        <li><b>Research extension:</b> replace the hint parser with an LLM/RAG component that extracts constraints from papers, lab notes, or ELNs.</li>
+      </ul>
+      <p class="muted">
+        Enable GitHub Pages: <span class="code">Settings → Pages → Deploy from branch → /docs</span>.
+      </p>
+    </div>
+
+    <div class="footer">
+      <p class="muted">MIT license. See <span class="code">CITATION.cff</span> for how to cite this software.</p>
+    </div>
+  </div>
+
+  <script src="assets/app.js"></script>
+</body>
+</html>
