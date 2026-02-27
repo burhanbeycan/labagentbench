@@ -1,7 +1,64 @@
 diff --git a/docs/assets/app.js b/docs/assets/app.js
-index 7e1b33d174d39ebac8ec9530e9dfa2a8b123c00a..c533cead21d2b106c97ff9be3c23dfc4065249ec 100644
+index 7e1b33d174d39ebac8ec9530e9dfa2a8b123c00a..8b617948ef23c3ed8b571b7c6d22868795b7395e 100644
 --- a/docs/assets/app.js
 +++ b/docs/assets/app.js
+@@ -216,53 +216,53 @@ function rbfKernel(x1, x2, ell=2.0, sigma=1.0){
+   const d2 = dx*dx + dy*dy;
+   return sigma*sigma*Math.exp(-0.5*d2/(ell*ell));
+ }
+ 
+ function gpFit(X, y, noise=1e-6){
+   const n = X.length;
+   const K = Array.from({length:n}, () => new Array(n).fill(0));
+   for (let i=0;i<n;i++){
+     for (let j=0;j<n;j++){
+       K[i][j] = rbfKernel(X[i], X[j]) + (i===j ? noise : 0.0);
+     }
+   }
+   const Kinv = invertMatrix(K);
+   const alpha = matVecMul(Kinv, y);
+   return {Kinv, alpha, X, y};
+ }
+ 
+ function gpPredict(model, xStar){
+   const n = model.X.length;
+   const k = new Array(n);
+   for (let i=0;i<n;i++) k[i] = rbfKernel(xStar, model.X[i]);
+   const mu = dot(k, model.alpha);
+ 
+   const v = matVecMul(model.Kinv, k);
+   const kxx = rbfKernel(xStar, xStar) + 1e-8;
+-  let var = kxx - dot(k, v);
+-  if (!Number.isFinite(var) || var < 1e-10) var = 1e-10;
+-  return {mu, var};
++  let variance = kxx - dot(k, v);
++  if (!Number.isFinite(variance) || variance < 1e-10) variance = 1e-10;
++  return {mu, var: variance};
+ }
+ 
+ // -----------------------
+ // Algorithms
+ // -----------------------
+ function runRandom(iters, seed, bounds){
+   const rng = LCG(seed);
+   const X = [];
+   const y = [];
+   for (let i=0;i<iters;i++){
+     const p = samplePoint(rng, bounds);
+     X.push(p);
+     y.push(branin(p[0], p[1]));
+   }
+   return {X, y};
+ }
+ 
+ function runGPLCB(iters, seed, bounds, kappa=2.0){
+   const rng = LCG(seed);
+   const X = [];
+   const y = [];
+ 
+   const n0 = Math.min(5, iters);
+   for (let i=0;i<n0;i++){
+     const p = samplePoint(rng, bounds);
 @@ -371,89 +371,91 @@ function drawLandscapeWithPoints(points){
      const p = points[i];
      const [x,y] = xyToPix(p, canvas);
